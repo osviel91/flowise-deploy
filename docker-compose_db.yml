@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  flowise:
+    image: flowiseai/flowise
+    restart: always
+    environment:
+      - EXTERNAL_PORT=${EXTERNAL_PORT}
+      - PORT=${PORT}
+      - CORS_ORIGINS=*
+      - IFRAME_ORIGINS=*
+      - FLOWISE_USERNAME=${FLOWISE_USERNAME}
+      - FLOWISE_PASSWORD=${FLOWISE_PASSWORD}
+      - APIKEY_PATH=${APIKEY_PATH}
+      - SECRETKEY_PATH=${SECRETKEY_PATH}
+      - LOG_PATH=${LOG_PATH}
+      - BLOB_STORAGE_PATH=${BLOB_STORAGE_PATH}
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - '${EXTERNAL_PORT}:${PORT}'
+    volumes:
+      - ~/.flowise:/root/.flowise
+    command: /bin/sh -c "sleep 3; flowise start"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

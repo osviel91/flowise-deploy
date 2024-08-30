@@ -23,7 +23,7 @@ services:
     ports:
       - '${EXTERNAL_PORT}:${PORT}'
     volumes:
-      - ~/.flowise:/root/.flowise
+      - wise_data:/root/.flowise
     command: /bin/sh -c "sleep 3; flowise start"
     depends_on:
       - db
@@ -36,7 +36,8 @@ services:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_flowise_data:/var/lib/postgresql/data
 
 volumes:
-  db_data:
+  db_flowise_data:
+  wise_data:
